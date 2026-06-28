@@ -1,0 +1,31 @@
+.DS_Store
+__pycache__/
+*.py[cod]
+
+# Datasets and generated annotations
+VideoMME/
+LongVideoBench/
+MLVU/
+LVBench/
+data/
+datasets/
+
+# Model checkpoints and large binary files
+checkpoints/
+models/
+*.bin
+*.pt
+*.pth
+*.ckpt
+*.safetensors
+
+# Evaluation outputs
+results/
+outputs/
+logs/
+*.log
+
+# Temporary files
+tmp/
+*.part*.json
+*.shards/
