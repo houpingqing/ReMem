@@ -8,9 +8,7 @@ ReMem is designed for the plug-and-play setting as a keyframe sampling method: b
 
 ## Motivation
 
-<p align="center">
-  <img src="assets/intro.png" width="95%" alt="Motivation and performance comparison">
-</p>
+![Motivation and performance comparison](assets/intro.png)
 
 Multimodal Large Language Models (MLLMs) demonstrate strong generalization on video tasks, but their restricted context windows make long video understanding difficult. Existing keyframe selection methods usually compare the query with each frame independently. This static query-to-frame matching can retrieve locally relevant frames, but it often overlooks relationships between different moments in the video.
 
@@ -26,9 +24,7 @@ Across four LongVideoQA benchmarks and three MLLMs, ReMem achieves strong zero-s
 
 ## Method
 
-<p align="center">
-  <img src="assets/method.png" width="95%" alt="Overview of ReMem">
-</p>
+![Overview of ReMem](assets/method.png)
 
 ReMem contains three main stages:
 
