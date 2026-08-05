@@ -1,10 +1,10 @@
 # Reasoning with Memory: A Temporal Granularity-Adaptive Framework for Training-Free Long Video Understanding
 
+[[arXiv](https://arxiv.org/abs/2607.24794)] [[Code](https://github.com/jinlab-imvr/ReMem)]
+
 This repository contains the official implementation of **ReMem**, a training-free keyframe selection framework for zero-shot LongVideoQA.
 
 ReMem is designed for the plug-and-play setting as a keyframe sampling method: before sending a long video to an MLLM, it selects a compact set of informative frames under a fixed visual-token budget. Unlike static query-to-frame selection, ReMem explicitly models the temporal granularity of each question and the structural memory of the video.
-
-> Paper link will be updated after release.
 
 ## Motivation
 
@@ -173,4 +173,14 @@ This project builds on excellent open-source projects, including [AKS](https://g
 
 ## Citation
 
-If you find ReMem useful for your research, please consider citing our paper. The final BibTeX will be updated after publication.
+If you find ReMem useful for your research, please consider citing our paper:
+
+```bibtex
+@article{meng2026reasoning,
+  title={Reasoning with Memory: A Temporal Granularity-Adaptive Framework for Training-Free Long Video Understanding},
+  author={Meng, Linghao and Li, Qiankun and Mao, Junyuan and Liao, Pujin and He, Zhicheng and Zhang, Enbo and Wang, Kun and Liu, Yang and Fu, Huazhu and Jin, Yueming},
+  journal={arXiv preprint arXiv:2607.24794},
+  year={2026},
+  note={Accepted by ECCV 2026}
+}
+```
