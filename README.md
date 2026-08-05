@@ -1,12 +1,12 @@
 # Reasoning with Memory: A Temporal Granularity-Adaptive Framework for Training-Free Long Video Understanding
 
 <p align="center">
-  <a href="https://arxiv.org/abs/2607.24794">Reasoning with Memory: A Temporal Granularity-Adaptive Framework for Training-Free Long Video Understanding</a>
+  <a href="https://arxiv.org/abs/2607.24794"><img src="https://img.shields.io/badge/arXiv%20paper-2607.24794-b31b1b.svg" alt="arXiv paper"></a>
+  <a href="https://arxiv.org/pdf/2607.24794"><img src="https://img.shields.io/badge/Paper-PDF-b31b1b.svg" alt="Paper PDF"></a>
 </p>
 
 <p align="center">
-  <a href="https://arxiv.org/abs/2607.24794"><img src="https://img.shields.io/badge/arXiv%20paper-2607.24794-b31b1b.svg" alt="arXiv paper"></a>
-  <a href="https://arxiv.org/pdf/2607.24794"><img src="https://img.shields.io/badge/Paper-PDF-b31b1b.svg" alt="Paper PDF"></a>
+  <a href="https://arxiv.org/abs/2607.24794">Reasoning with Memory: A Temporal Granularity-Adaptive Framework for Training-Free Long Video Understanding</a>
 </p>
 
 ## Overview
