@@ -1,6 +1,9 @@
 # Reasoning with Memory: A Temporal Granularity-Adaptive Framework for Training-Free Long Video Understanding
 
-[Reasoning with Memory: A Temporal Granularity-Adaptive Framework for Training-Free Long Video Understanding](https://arxiv.org/abs/2607.24794)
+[![arXiv paper](https://img.shields.io/badge/arXiv%20paper-2607.24794-b31b1b.svg)](https://arxiv.org/abs/2607.24794)
+[![Paper PDF](https://img.shields.io/badge/Paper-PDF-b31b1b.svg)](https://arxiv.org/pdf/2607.24794)
+
+## Overview
 
 This repository contains the official implementation of **ReMem**, a training-free keyframe selection framework for zero-shot LongVideoQA.
 
