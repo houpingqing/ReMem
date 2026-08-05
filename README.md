@@ -1,6 +1,6 @@
 # Reasoning with Memory: A Temporal Granularity-Adaptive Framework for Training-Free Long Video Understanding
 
-[[arXiv](https://arxiv.org/abs/2607.24794)] [[Code](https://github.com/jinlab-imvr/ReMem)]
+[Reasoning with Memory: A Temporal Granularity-Adaptive Framework for Training-Free Long Video Understanding](https://arxiv.org/abs/2607.24794)
 
 This repository contains the official implementation of **ReMem**, a training-free keyframe selection framework for zero-shot LongVideoQA.
 
