@@ -1,8 +1,10 @@
 import openai
 import ast
+import os
+import re
 
-def classify_question(question, candidates, api_key):
-    client = openai.OpenAI(api_key=api_key)
+def classify_question(question, candidates, api_key=None):
+    client = openai.OpenAI(api_key=api_key or os.getenv("OPENAI_API_KEY", "EMPTY"), base_url=os.getenv("REMEM_LLM_BASE_URL") or None)
     
     prompt = f"""
 You are an expert in visual perception and long-term knowledge reasoning.
@@ -25,8 +27,12 @@ Output Requirement:
 Output:
 """
     response = client.chat.completions.create(
-        model="gpt-4o",
+        model=os.getenv("REMEM_LLM_MODEL", "gpt-4o"),
         messages=[{"role": "user", "content": prompt}]
+        ,temperature=0.0,
+        top_p=1.0,
+        max_tokens=256,
+        extra_body={"chat_template_kwargs": {"enable_thinking": False}},
     )
     
     content = response.choices[0].message.content.strip()
@@ -47,4 +53,6 @@ Output:
             return [content] 
     except Exception as e:
         print(f"Error parsing entity context: {e}")
-        return [content.strip("[]'\" ")]
+        # Some local models omit escaping apostrophes inside Python-quoted items.
+        items = re.split(r"\\?['\"]\s*,\s*\\?['\"]", content.strip("[] \n"))
+        return [item.strip(" '\"\n") for item in items if item.strip(" '\"\n")]

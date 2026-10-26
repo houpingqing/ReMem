@@ -10,7 +10,6 @@ try:
 
     pynndescent_available = True
 except Exception as e:
-    warnings.warn('pynndescent not installed: {}'.format(e))
     pynndescent_available = False
     pass
 

@@ -1,0 +1,27 @@
+task: remem_videomme
+dataset_path: json
+dataset_kwargs:
+  data_files:
+    test: D:/ReMem/lmms_tasks/remem_videomme.jsonl
+test_split: test
+output_type: generate_until
+doc_to_text: !function utils.remem_doc_to_text
+doc_to_messages: !function utils.remem_doc_to_messages
+doc_to_target: answer
+generation_kwargs:
+  max_new_tokens: 16
+  temperature: 0
+  top_p: 1.0
+  num_beams: 1
+  do_sample: false
+process_results: !function utils.remem_process_results
+metric_list:
+  - metric: videomme_perception_score
+    aggregation: !function utils.remem_aggregate_results
+    higher_is_better: true
+lmms_eval_specific_kwargs:
+  default:
+    pre_prompt: "Question: "
+    post_prompt: "Answer with the option letter only."
+metadata:
+  - version: 1.0

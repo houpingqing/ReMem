@@ -62,14 +62,38 @@ conda create -n remem python=3.10
 conda activate remem
 
 pip install torch torchvision
-pip install transformers openai decord pillow numpy scipy scikit-learn accelerate
+pip install transformers openai decord pillow numpy scipy scikit-learn accelerate pyarrow
 ```
+
+On Windows, the generic PyPI `torch` wheel may be CPU-only. For CUDA frame
+selection, install matching CUDA wheels from the [PyTorch installer](https://pytorch.org/get-started/locally/).
+The selector currently offers CUDA 12.6 for Windows; for example:
+
+```powershell
+conda run -n remem python -m pip install --force-reinstall torch==2.12.0 torchvision==0.27.0 --index-url https://download.pytorch.org/whl/cu126
+```
+
+The frame selector also runs on CPU, though long videos will be slow.
 
 Set your OpenAI API key before running the question parsing stage:
 
 ```bash
 export OPENAI_API_KEY="YOUR_OPENAI_API_KEY"
 ```
+
+For a local OpenAI-compatible vLLM server, set these variables instead (PowerShell example):
+
+```powershell
+$env:REMEM_LLM_BASE_URL = 'http://127.0.0.1:8000/v1'
+$env:REMEM_LLM_MODEL = 'qwen3-vl-4b-instruct'
+$env:OPENAI_API_KEY = 'EMPTY'
+```
+
+On Windows, run the repository commands with `conda run -n remem python ...` if the
+environment is not activated. The vLLM model is used for question parsing; frame
+selection still requires the separate
+[`openai/clip-vit-large-patch14-336`](https://huggingface.co/openai/clip-vit-large-patch14-336)
+checkpoint, which Transformers downloads on first use.
 
 ## Dataset Preparation
 
@@ -83,6 +107,15 @@ VideoMME/
 |   |-- xxx.mp4
 |   `-- ...
 `-- val_qa.json
+```
+
+The official Video-MME download has Parquet annotations rather than this JSON
+schema. After downloading `videomme/test-00000-of-00001.parquet` and the video
+archives, extract the MP4 files into `VideoMME/videos` and convert the annotation:
+
+```powershell
+conda run -n remem python convert_videomme.py .\VideoMME\test-00000-of-00001.parquet .\VideoMME\videos .\VideoMME\val_qa_raw_full.json
+conda run -n remem python prepare_annotations.py .\VideoMME\val_qa_raw_full.json .\VideoMME\val_qa_full.json
 ```
 
 Each item in the annotation JSON should contain the fields used by `frame_select.py`:
@@ -104,6 +137,14 @@ The `granularity` and `entity_keywords` fields are produced by the query parsing
 - `granularity_analysis.py`: maps each question to a continuous temporal granularity score.
 - `entity_extraction.py`: extracts 3-5 visually discriminative entity phrases from the question and answer candidates.
 
+To add those fields to an annotation file, run:
+
+```powershell
+conda run -n remem python prepare_annotations.py .\VideoMME\val_qa_raw_full.json .\VideoMME\val_qa_full.json
+```
+
+The script saves after each record so completed records are retained if interrupted.
+
 Example usage inside your data preparation script:
 
 ```python
@@ -124,9 +165,9 @@ Before running frame selection, check the dataset paths in `frame_select.py`:
 Using Video-MME as an example:
 
 ```python
-label_path = "./VideoMME/val_qa.json"
+label_path = "./VideoMME/val_qa_full.json"
 video_root = "./VideoMME/videos"
-output_path = "./VideoMME/val_qa_selected.json"
+output_path = "./VideoMME/val_qa_selected_full_32f.json"
 ```
 
 Then run:
@@ -134,6 +175,27 @@ Then run:
 ```bash
 python frame_select.py
 ```
+
+For the complete local Video-MME run on this Windows machine, use:
+
+```powershell
+.\run_videomme_full.ps1 -Stage validate
+.\run_videomme_full.ps1
+```
+
+The second command prepares all 2700 questions with the local 4B model,
+selects 32 frames per question, temporarily switches the shared vLLM service
+to Qwen3-VL-8B-Instruct, runs inference, reports overall/short/medium/long
+accuracy, and restores the Sentrix 4B profile. Outputs are saved under
+`VideoMME/*_full_32f_8b_lmms_prompt.json`. The preparation and inference
+stages can be resumed by rerunning the same command. To run a single stage,
+pass `-Stage prepare`, `-Stage select`, `-Stage infer`, or `-Stage score`.
+
+This local runner follows the current Video-MME `lmms_eval` question prompt
+and greedy generation settings, but transmits the selected frames as images
+through vLLM. The authors' modified `lmms_eval` adapter for `frame_idx` is
+not published, and local question parsing uses Qwen3-VL-4B instead of GPT-4o.
+Therefore its result is a local approximation, not an exact paper reproduction.
 
 The output JSON will include:
 

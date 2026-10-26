@@ -31,8 +31,10 @@ class CLIPDoubleTower(nn.Module):
         # Text feature
         if question is not None:
             inputs = self.processor(text=question, images=None, return_tensors="pt", padding=True, truncation=True)
-            text_inputs = {k: v.to(self.device) for k, v in inputs.items() if k.startswith("input")}
+            text_inputs = {k: v.to(self.device) for k, v in inputs.items() if k in ("input_ids", "attention_mask")}
             text_outputs = self.clip.get_text_features(**text_inputs)
+            if hasattr(text_outputs, "pooler_output"):
+                text_outputs = text_outputs.pooler_output
             text_pooled = F.normalize(text_outputs, dim=-1)
 
         # Image feature
@@ -44,6 +46,8 @@ class CLIPDoubleTower(nn.Module):
             image_inputs = self.processor(images=images, return_tensors="pt")
             image_inputs = {k: v.to(self.device) for k, v in image_inputs.items()}
             image_outputs = self.clip.get_image_features(**image_inputs)
+            if hasattr(image_outputs, "pooler_output"):
+                image_outputs = image_outputs.pooler_output
             image_pooled = F.normalize(image_outputs, dim=-1)
 
         return text_pooled, image_pooled

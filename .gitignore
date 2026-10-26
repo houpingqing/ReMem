@@ -1,6 +1,11 @@
 .DS_Store
+.idea/
 __pycache__/
 *.py[cod]
+
+# Local disk images and crash dumps
+*.vhdx
+*.dmp
 
 # Datasets and generated annotations
 VideoMME/
@@ -29,3 +34,7 @@ logs/
 tmp/
 *.part*.json
 *.shards/
+
+# Local secrets and machine-specific settings
+.env
+.env.*
