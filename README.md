@@ -197,6 +197,29 @@ through vLLM. The authors' modified `lmms_eval` adapter for `frame_idx` is
 not published, and local question parsing uses Qwen3-VL-4B instead of GPT-4o.
 Therefore its result is a local approximation, not an exact paper reproduction.
 
+For the Linux server, the repository also provides a direct-HF, eight-GPU
+answering launcher. Run the Qwen3-8B parser first on one GPU, then run the
+Qwen3-VL-8B answering stage with one data-parallel process per GPU:
+
+```bash
+conda activate remem
+export REMEM_REPO_ROOT=/mnt/d/hpq/ReMem
+export LMMS_EVAL_ROOT=/mnt/d/hpq/lmms-eval
+export REMEM_VIDEO_ROOT=/mnt/d/hpq/Dataset/VideoMME/videos
+export REMEM_TEXT_MODEL=/mnt/d/hpq/models/Qwen3-8B
+export REMEM_VL_MODEL=/mnt/d/hpq/models/Qwen3-VL-8B-Instruct
+
+bash eval/remem_qwen3_text_parser.sh \
+  /mnt/d/hpq/Dataset/VideoMME/val_qa_raw_full.json \
+  /mnt/d/hpq/Dataset/VideoMME/val_qa_full_qwen3_8b.json
+
+bash eval/remem_qwen3_vl_8gpu.sh
+```
+
+The server launcher keeps Qwen3-VL-8B and the paper-style greedy generation
+settings, while `accelerate` distributes questions across all eight GPUs. It
+does not start vLLM.
+
 The output JSON will include:
 
 ```json

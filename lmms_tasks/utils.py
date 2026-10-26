@@ -19,6 +19,33 @@ _LAST_FRAMES = None
 _LAST_FPS = None
 
 
+def _resolve_video_path(doc: dict) -> str:
+    """Resolve a dataset video path on Windows or the Linux server.
+
+    The checked-in Video-MME JSONL was generated on Windows and therefore
+    contains ``D:\\ReMem\\...`` paths. On the server we keep the annotation
+    unchanged and set ``REMEM_VIDEO_ROOT`` to the extracted videos directory.
+    """
+    raw = str(doc.get("video_path", ""))
+    candidates = [Path(raw)]
+    root = os.environ.get("REMEM_VIDEO_ROOT", "").strip()
+    if root:
+        normalized = raw.replace("\\", "/")
+        marker = "/videos/"
+        if marker in normalized:
+            relative = normalized.split(marker, 1)[1]
+        else:
+            relative = str(doc.get("video_name", "")).replace("\\", "/")
+        candidates.insert(0, Path(root) / relative)
+    for candidate in candidates:
+        if candidate.exists():
+            return str(candidate)
+    raise FileNotFoundError(
+        f"Video not found for {doc.get('question_id', '')}: {raw}. "
+        f"Set REMEM_VIDEO_ROOT to the extracted Video-MME videos directory."
+    )
+
+
 def _extract_mcq_answer(response: str) -> str:
     """Load the official lmms-eval extractor without importing all task deps."""
     root = Path(os.environ.get("LMMS_EVAL_ROOT", "D:/lmms-eval-main"))
@@ -106,7 +133,7 @@ def _decode_pyav(video_path: str, indices: List[int]) -> List[Image.Image]:
 
 def _get_frames(doc: dict) -> Tuple[List[Image.Image], List[float]]:
     global _LAST_VIDEO, _LAST_FRAMES, _LAST_FPS
-    video_path = str(doc["video_path"])
+    video_path = _resolve_video_path(doc)
     fps, count, width, height = _probe(video_path)
     indices = sorted({min(max(int(float(index)), 0), count - 1) for index in doc.get("frame_idx", [])})
     if video_path == _LAST_VIDEO and _LAST_FRAMES is not None and _LAST_FPS == fps:
