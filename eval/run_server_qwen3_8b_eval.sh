@@ -94,4 +94,6 @@ export REMEM_REPO_ROOT="${REPO_ROOT}"
 export LMMS_EVAL_ROOT="${LMMS_ROOT}"
 export REMEM_VL_MODEL="${VL_MODEL}"
 export REMEM_VIDEO_ROOT="${VIDEO_ROOT}"
+export CUDA_VISIBLE_DEVICES="0,1,2,3"
+export REMEM_NUM_PROCESSES=4
 exec bash eval/remem_qwen3_vl_8gpu.sh

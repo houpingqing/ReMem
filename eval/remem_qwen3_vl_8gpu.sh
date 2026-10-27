@@ -9,6 +9,7 @@ MODEL_PATH="${REMEM_VL_MODEL:-/mnt/d/hpq/models/Qwen3-VL-8B-Instruct}"
 VIDEO_ROOT="${REMEM_VIDEO_ROOT:-/mnt/d/hpq/Dataset/VideoMME/videos}"
 OUTPUT_PATH="${REMEM_OUTPUT_PATH:-${REPO_ROOT}/VideoMME/paper_lmms_qwen3vl8b_qwen3parser}"
 MAIN_PORT="${LMMS_MAIN_PROCESS_PORT:-12345}"
+NUM_PROCESSES="${REMEM_NUM_PROCESSES:-8}"
 
 export PYTHONPATH="${LMMS_EVAL_ROOT}:${REPO_ROOT}:${PYTHONPATH:-}"
 export LMMS_EVAL_ROOT
@@ -19,7 +20,7 @@ export TOKENIZERS_PARALLELISM=false
 
 cd "${LMMS_EVAL_ROOT}"
 exec accelerate launch \
-  --num_processes 8 \
+  --num_processes "${NUM_PROCESSES}" \
   --main_process_port "${MAIN_PORT}" \
   -m lmms_eval eval \
   --include_path "${REPO_ROOT}/lmms_tasks" \
