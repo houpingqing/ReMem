@@ -359,7 +359,11 @@ def worker(rank, world_size, shard_paths, output_path, MODEL_NAME, video_root, d
             continue
         print(f"[{device}] Question {idx+1}/{total} ({qid}): {data.get('video_name', '')}", flush=True)
         question = data['question']
-        video_path = os.path.join(video_root, data['video_name'])
+        # The released annotations use Windows separators. Normalize them
+        # before joining on Linux servers while preserving the original path
+        # semantics on Windows.
+        video_name = str(data['video_name']).replace('\\', os.sep).replace('/', os.sep)
+        video_path = os.path.join(video_root, video_name)
         granularity_score = data['granularity']
         video_duration = int(round(data['duration']))
         print(f"[{device}] Video duration: {video_duration} seconds", flush=True)
